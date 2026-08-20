@@ -1,8 +1,7 @@
 const bookingUrl = "https://yandex.com/maps/org/studiya_manikyura/237621079241/?booking%5Bpage%5D=resources&booking%5Bpermalink%5D=237621079241&ll=37.883007%2C55.710063&z=17";
 const service = (name, price = "по записи", time = "", description = "") => ({ name, price, time, description, url: bookingUrl });
 
-// Photos will be added after the text/data pass.
-const portfolioCount = 0;
+const portfolioCount = 13;
 
 export default {
   template: {
@@ -65,8 +64,6 @@ export default {
     yandexMapHrefMatch: "yandex.com/maps/org/studiya_manikyura/237621079241",
   },
 
-  // Yandex rating/count could not be read reliably from the supplied card URL in this environment.
-  // Temporary values are intentionally left empty instead of mixing in a rating from another platform.
   reputation: {
     rating: "",
     reviewCount: "",
@@ -75,7 +72,7 @@ export default {
   images: {
     portrait: "/assets/client/master.jpg",
     about: "/assets/client/master.jpg",
-    favicon: "/assets/client/logo.jpg",
+    favicon: "/assets/client/master.jpg",
     beforeAfter: [],
     gallery: Array.from({ length: portfolioCount }, (_, index) => ({
       src: `/assets/client/portfolio/${String(index + 1).padStart(2, "0")}.jpg`,
@@ -83,7 +80,6 @@ export default {
     })),
   },
 
-  // These two arrays are needed by the base generator; categories mode below controls the final UI.
   services: {
     manicure: [
       service("Аппаратный маникюр"),
@@ -138,7 +134,7 @@ export default {
       title: "−50% на маникюр и педикюр",
       highlight: "от 1 150 ₽ по акции",
       description: "Маникюр и педикюр с покрытием гель-лаком по действующему предложению партнёра Biglion.",
-      period: "до 2 марта 2027",
+      period: "актуальность уточняйте при записи",
       image: "/assets/client/portfolio/01.jpg",
       alt: "Работа Sally Nails",
     },
@@ -147,7 +143,7 @@ export default {
   amenities: [
     { title: "Рядом с метро", text: "Улица Дмитриевского — несколько минут пешком" },
     { title: "Ежедневно", text: "Студия работает с 10:00 до 21:00" },
-    { title: "Гель-лаки", text: "В акции указаны материалы Uno, Gresa и Ega" },
+    { title: "Гель-лаки", text: "Маникюр и педикюр с покрытием" },
   ],
 
   seo: {
