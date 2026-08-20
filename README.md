@@ -30,4 +30,4 @@ assets/
 
 Дизайн и структура берутся из зафиксированной версии TANEM Master Template v1; клиентский репозиторий хранит только данные и фотографии.
 
-Deployment initialized after enabling GitHub Pages.
+Deployment re-triggered after enabling GitHub Actions.
