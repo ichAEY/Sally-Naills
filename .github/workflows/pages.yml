@@ -50,7 +50,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ichAEY/tanem-master-template-v1
-          ref: d34361b6f2f78a98ec221b769c580e27949b4e96
+          ref: 0a263e8e40647454db81e5d8aba763e4dcd186f5
           path: factory
 
       - name: Stage client and factory
