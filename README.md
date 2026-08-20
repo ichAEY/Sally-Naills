@@ -29,3 +29,5 @@ assets/
 После появления `master.jpg` и минимум пяти JPG в `portfolio` GitHub Actions соберёт сайт автоматически.
 
 Дизайн и структура берутся из зафиксированной версии TANEM Master Template v1; клиентский репозиторий хранит только данные и фотографии.
+
+Deployment initialized after enabling GitHub Pages.
