@@ -167,7 +167,7 @@ export default {
       highlight: "от 1 150 ₽ по акции",
       description: "Маникюр и педикюр с покрытием гель-лаком по действующему предложению Sally Nails на Biglion.",
       period: "до 2 марта 2027",
-      image: "/assets/client/portfolio/01.png",
+      image: "/assets/client/AACTYGA.jpg",
       alt: "Акция Sally Nails",
     },
   ],
