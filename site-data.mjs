@@ -5,7 +5,8 @@ const portfolioCount = 13;
 
 export default {
   template: {
-    serviceMode: "categories",
+    profileType: "studio",
+    serviceMode: "simple",
     portfolioPreviewCount: 5,
   },
 
@@ -22,14 +23,14 @@ export default {
     monogram: "S",
     profession: "маникюра и педикюра",
     heroTitle: "Sally Nails — студия маникюра и педикюра",
-    heroCopy: "Маникюр, педикюр и уход за ногтями рядом с метро Улица Дмитриевского. Аппаратные техники, покрытие гель-лаком и запись на удобное время.",
-    experienceYears: "10+",
-    experienceAria: "Более десяти лет работы студии",
+    heroCopy: "Маникюр и педикюр рядом с метро Улица Дмитриевского. Покрытие гель-лаком и предварительная запись на удобное время.",
+    experienceYears: "",
+    experienceAria: "",
     aboutTitle: "Sally Nails — студия маникюра",
-    aboutLead: "Sally Nails — студия маникюра и педикюра на улице Дмитриевского.",
+    aboutLead: "Студия маникюра и педикюра на улице Дмитриевского.",
     aboutParagraphs: [
-      "Студия работает в Кожухово и специализируется на маникюре, педикюре и покрытии гель-лаком. В открытых источниках также указаны мужской маникюр и аппаратные техники.",
-      "Запись доступна заранее. Студия работает ежедневно, а до метро Улица Дмитриевского можно дойти за несколько минут.",
+      "Основные направления — маникюр и педикюр с покрытием гель-лаком. В действующем предложении студии указаны материалы Uno, Gresa и Ega.",
+      "Студия работает ежедневно с 10:00 до 21:00. Запись доступна заранее через онлайн-форму.",
     ],
     skills: ["Маникюр", "Педикюр", "Покрытие гель-лаком"],
   },
@@ -64,78 +65,48 @@ export default {
     yandexMapHrefMatch: "yandex.com/maps/org/studiya_manikyura/237621079241",
   },
 
+  // The supplied Yandex card could not be read reliably by the build agent, so no Yandex score is invented.
   reputation: {
     rating: "",
     reviewCount: "",
   },
 
   images: {
-    portrait: "/assets/client/master.jpg",
-    about: "/assets/client/master.jpg",
-    favicon: "/assets/client/master.jpg",
+    portrait: "/assets/client/master.png",
+    about: "/assets/client/master.png",
+    favicon: "/assets/client/master.png",
     beforeAfter: [],
     gallery: Array.from({ length: portfolioCount }, (_, index) => ({
-      src: `/assets/client/portfolio/${String(index + 1).padStart(2, "0")}.jpg`,
+      src: `/assets/client/portfolio/${String(index + 1).padStart(2, "0")}.png`,
       alt: `Работа Sally Nails — фото ${index + 1}`,
     })),
   },
 
   services: {
     manicure: [
-      service("Аппаратный маникюр"),
+      service("Маникюр"),
       service("Маникюр с покрытием гель-лаком"),
-      service("Мужской маникюр"),
+      service("Аппаратный маникюр"),
     ],
     pedicure: [
-      service("Женский педикюр"),
+      service("Педикюр"),
       service("Педикюр с покрытием гель-лаком"),
-      service("Аппаратный педикюр"),
+      service("Уход за стопами"),
     ],
   },
 
-  serviceCategories: [
-    {
-      key: "manicure",
-      label: "Маникюр",
-      items: [
-        service("Аппаратный маникюр"),
-        service("Маникюр с покрытием гель-лаком"),
-        service("Мужской маникюр"),
-      ],
-    },
-    {
-      key: "pedicure",
-      label: "Педикюр",
-      items: [
-        service("Женский педикюр"),
-        service("Педикюр с покрытием гель-лаком"),
-        service("Аппаратный педикюр"),
-      ],
-    },
-    {
-      key: "brows",
-      label: "Брови",
-      items: [
-        service("Коррекция бровей"),
-        service("Окрашивание бровей"),
-      ],
-    },
-  ],
+  serviceCategories: [],
 
-  reviews: [
-    {
-      text: "Клиент отметила удобное расположение рядом с метро и аккуратный аппаратный маникюр.",
-      author: "Дина Т.",
-    },
-  ],
+  // We do not mix Biglion reviews with an unverified Yandex rating block.
+  reviews: [],
 
   promotions: [
     {
       title: "−50% на маникюр и педикюр",
       highlight: "от 1 150 ₽ по акции",
-      description: "Маникюр и педикюр с покрытием гель-лаком по действующему предложению партнёра Biglion.",
-      period: "актуальность уточняйте при записи",
-      image: "/assets/client/portfolio/01.jpg",
+      description: "Маникюр и педикюр с покрытием гель-лаком по действующему предложению Sally Nails на Biglion.",
+      period: "до 2 марта 2027",
+      image: "/assets/client/portfolio/01.png",
       alt: "Работа Sally Nails",
     },
   ],
@@ -143,7 +114,7 @@ export default {
   amenities: [
     { title: "Рядом с метро", text: "Улица Дмитриевского — несколько минут пешком" },
     { title: "Ежедневно", text: "Студия работает с 10:00 до 21:00" },
-    { title: "Гель-лаки", text: "Маникюр и педикюр с покрытием" },
+    { title: "Гель-лаки", text: "Uno, Gresa и Ega указаны в действующей акции" },
   ],
 
   seo: {
