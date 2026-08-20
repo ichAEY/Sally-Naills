@@ -19,38 +19,32 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       ready: ${{ steps.readiness.outputs.ready }}
+
     steps:
       - name: Checkout client repository
         uses: actions/checkout@v4
         with:
           path: customer
 
-      - name: Check whether client content is ready
+      - name: Check client content
         id: readiness
         shell: bash
         run: |
           set -e
           READY=true
+          MASTER_COUNT=$(find customer/assets/images -maxdepth 1 -type f \( -iname 'master.jpg' -o -iname 'master.jpeg' -o -iname 'master.png' -o -iname 'master.webp' \) 2>/dev/null | wc -l | tr -d ' ')
+          PORTFOLIO_COUNT=$(find customer/assets/images/portfolio -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) 2>/dev/null | wc -l | tr -d ' ')
 
-          if [ ! -f customer/assets/images/master.jpg ]; then
-            echo "Waiting for assets/images/master.jpg"
-            READY=false
-          fi
-
-          COUNT=$(find customer/assets/images/portfolio -maxdepth 1 -type f -iname '*.jpg' 2>/dev/null | wc -l | tr -d ' ')
-          if [ "$COUNT" -lt 5 ]; then
-            echo "Waiting for at least 5 portfolio JPG files; found $COUNT"
-            READY=false
-          fi
+          [ "$MASTER_COUNT" -ge 1 ] || READY=false
+          [ "$PORTFOLIO_COUNT" -ge 5 ] || READY=false
 
           if ! node --input-type=module -e "import('./customer/site-data.mjs').then(({default:s}) => process.exit(s?.master?.name && s?.links?.bookingUrl ? 0 : 1))"; then
-            echo "master.name or bookingUrl is missing"
             READY=false
           fi
 
           echo "ready=$READY" >> "$GITHUB_OUTPUT"
 
-      - name: Checkout pinned TANEM visual base
+      - name: Checkout pinned visual base
         if: steps.readiness.outputs.ready == 'true'
         uses: actions/checkout@v4
         with:
@@ -58,36 +52,30 @@ jobs:
           ref: ce1bd42b44e76e1851af9e069c4cbcf06fc8eac2
           path: template
 
-      - name: Checkout pinned TANEM factory
+      - name: Checkout corrected TANEM factory
         if: steps.readiness.outputs.ready == 'true'
         uses: actions/checkout@v4
         with:
           repository: ichAEY/tanem-master-template-v1
-          ref: a387b7255a79d94f2957bc8e8a4b553a4b4f8f5c
+          ref: 15686ee22b0586b34fa1111e99774dd87b569378
           path: factory
 
-      - name: Apply client data and assets
+      - name: Stage client data, assets and factory scripts
         if: steps.readiness.outputs.ready == 'true'
         shell: bash
         run: |
           set -e
           cp customer/site-data.mjs template/site-data.mjs
           mkdir -p template/public/assets/client/portfolio
-          cp customer/assets/images/master.jpg template/public/assets/client/master.jpg
-          cp customer/assets/images/portfolio/*.jpg template/public/assets/client/portfolio/
 
-          if [ -f customer/assets/images/logo.jpg ]; then
-            cp customer/assets/images/logo.jpg template/public/assets/client/logo.jpg
-          fi
+          find customer/assets/images -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) -exec cp {} template/public/assets/client/ \;
+          find customer/assets/images/portfolio -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) -exec cp {} template/public/assets/client/portfolio/ \;
 
-          if [ -f customer/CNAME ]; then
-            cp customer/CNAME template/public/CNAME
-            echo "SITE_BASE_PATH=" >> "$GITHUB_ENV"
-          else
-            REPO_NAME="${GITHUB_REPOSITORY#*/}"
-            echo "SITE_BASE_PATH=/$REPO_NAME" >> "$GITHUB_ENV"
-          fi
+          cp factory/scripts/apply-tanem-template.mjs template/scripts/tanem-template.mjs
+          cp factory/scripts/apply-tanem-final.mjs template/scripts/tanem-final.mjs
 
+          REPO_NAME="${GITHUB_REPOSITORY#*/}"
+          echo "SITE_BASE_PATH=/$REPO_NAME" >> "$GITHUB_ENV"
           printf '%s\n' '// Booking uses the external client booking URL.' > template/public/noop.js
 
       - name: Setup Node
@@ -103,15 +91,13 @@ jobs:
         working-directory: template
         run: npm ci
 
-      - name: Generate site from client data
+      - name: Generate client site
         if: steps.readiness.outputs.ready == 'true'
         working-directory: template
-        run: node scripts/generate-site.mjs
-
-      - name: Apply fixed TANEM v1 structure
-        if: steps.readiness.outputs.ready == 'true'
-        working-directory: template
-        run: node ../factory/scripts/apply-tanem-template.mjs
+        run: |
+          node scripts/generate-site.mjs
+          node scripts/tanem-template.mjs
+          node scripts/tanem-final.mjs
 
       - name: Configure static export
         if: steps.readiness.outputs.ready == 'true'
@@ -119,28 +105,21 @@ jobs:
         run: |
           cat > next.config.ts <<'EOF'
           import type { NextConfig } from "next";
-
           const basePath = process.env.SITE_BASE_PATH || "";
-
           const nextConfig: NextConfig = {
             output: "export",
             trailingSlash: true,
             images: { unoptimized: true },
             basePath,
           };
-
           export default nextConfig;
           EOF
 
-      - name: Prefix root asset URLs for project Pages
+      - name: Prefix project Pages asset URLs
         if: steps.readiness.outputs.ready == 'true'
         working-directory: template
         shell: bash
         run: |
-          if [ -z "$SITE_BASE_PATH" ]; then
-            exit 0
-          fi
-
           node - <<'NODE'
           const fs = require('fs');
           const path = require('path');
@@ -154,7 +133,6 @@ jobs:
             ['/favicon.svg', `${prefix}/favicon.svg`],
             ['/noop.js', `${prefix}/noop.js`],
           ];
-
           function walk(dir) {
             for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
               const full = path.join(dir, entry.name);
@@ -167,11 +145,10 @@ jobs:
               }
             }
           }
-
           for (const root of roots) if (fs.existsSync(root)) walk(root);
           NODE
 
-      - name: Prepare clean Pages build
+      - name: Prepare clean build
         if: steps.readiness.outputs.ready == 'true'
         working-directory: template
         run: |
