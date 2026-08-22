@@ -67,6 +67,7 @@ jobs:
           cp factory/scripts/apply-tanem-polish.mjs template/scripts/tanem-polish.mjs
           cp factory/scripts/apply-tanem-tuning.mjs template/scripts/tanem-tuning.mjs
           echo "SITE_BASE_PATH=" >> "$GITHUB_ENV"
+          if [ -f customer/CNAME ]; then cp customer/CNAME template/public/CNAME; fi
           printf '%s\n' '// external booking link' > template/public/noop.js
 
       - name: Setup Node
@@ -140,11 +141,17 @@ jobs:
       - name: Build
         if: steps.ready.outputs.ready == 'true'
         working-directory: template
-        run: npx next build
+        run: |
+          npx next build
+          test -s out/index.html
+          test -s out/CNAME
+          test -d out/_next
 
       - name: Setup Pages
         if: steps.ready.outputs.ready == 'true'
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - name: Upload artifact
         if: steps.ready.outputs.ready == 'true'
