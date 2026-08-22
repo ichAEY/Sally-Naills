@@ -3,6 +3,9 @@ name: Deploy Sally Nails TANEM site
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - deploy-status.json
+      - .github/workflows/deploy-monitor.yml
   workflow_dispatch:
 
 permissions:
