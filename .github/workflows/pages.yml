@@ -66,7 +66,7 @@ jobs:
           cp factory/scripts/apply-tanem-final.mjs template/scripts/tanem-final.mjs
           cp factory/scripts/apply-tanem-polish.mjs template/scripts/tanem-polish.mjs
           cp factory/scripts/apply-tanem-tuning.mjs template/scripts/tanem-tuning.mjs
-          echo "SITE_BASE_PATH=/${GITHUB_REPOSITORY#*/}" >> "$GITHUB_ENV"
+          echo "SITE_BASE_PATH=" >> "$GITHUB_ENV"
           printf '%s\n' '// external booking link' > template/public/noop.js
 
       - name: Setup Node
