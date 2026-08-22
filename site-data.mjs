@@ -66,8 +66,8 @@ export default {
   },
 
   reputation: {
-    rating: "",
-    reviewCount: "",
+    rating: "5,0",
+    reviewCount: "66",
   },
 
   images: {
@@ -159,7 +159,11 @@ export default {
     },
   ],
 
-  reviews: [],
+  reviews: [
+    { text: "Было очень приятно посетить данный салон. Спасибо", author: "Мария Мокринская" },
+    { text: "Огромное спасибо за оперативный и качественный маникюр!", author: "Инна Луминецкая" },
+    { text: "Я в восторге от визита к мастеру!", author: "Юлия" },
+  ],
 
   promotions: [
     {
